@@ -168,11 +168,11 @@ if __name__ == "__main__":
         else:
             print("No null values found in class_data.")
 
-        # row wise 
-        class_data['source_code'] = class_data.apply(lambda row: "File: " + row['file_path'] + "\n\n" +
-                                                        "Class: " + row['class_name'] + "\n\n" +
-                                                        "Source Code:\n" + 
-                                                        clip_text_to_max_tokens(row['source_code'], MAX_TOKENS) + "\n\n", axis=1)
+        if len(class_data) > 0:
+            class_data['source_code'] = class_data.apply(lambda row: "File: " + row['file_path'] + "\n\n" +
+                                                          "Class: " + row['class_name'] + "\n\n" +
+                                                          "Source Code:\n" + 
+                                                          clip_text_to_max_tokens(row['source_code'], MAX_TOKENS) + "\n\n", axis=1)
 
         # TODO a misc content table is possible? where i dump other stuff like text files, markdown, config files, toml files etc.
         # print(markdown_contents)

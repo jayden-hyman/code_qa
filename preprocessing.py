@@ -27,7 +27,8 @@ BLACKLIST_DIR = [
     ".aws-sam",
     ".terraform"
 ]
-WHITELIST_FILES = [".java", ".py", ".js", ".rs"]
+# TODO: Add HTML and CSS to the whitelist
+WHITELIST_FILES = [".java", ".py", ".js", ".jsx", ".ts", ".tsx", ".rs"]
 BLACKLIST_FILES = ["docker-compose.yml"]
 
 NODE_TYPES = {
@@ -47,9 +48,16 @@ NODE_TYPES = {
         "class": "class_declaration",
         "method": "method_definition"
     },
+    "typescript": {
+        "class": "class_declaration",
+        "method": "method_definition"
+    },
+    "tsx": {
+        "class": "class_declaration",
+        "method": "method_definition"
+    },
     # Add other languages as needed
 }
-
 REFERENCE_IDENTIFIERS = {
     "python": {
         "class": "identifier",
@@ -71,15 +79,29 @@ REFERENCE_IDENTIFIERS = {
         "method": "call_expression",
         "child_field_name": "function"
     },
+    "typescript": {
+        "class": "identifier",
+        "method": "call_expression",
+        "child_field_name": "function"
+    },
+    "tsx": {
+        "class": "identifier",
+        "method": "call_expression",
+        "child_field_name": "function"
+    },
     # Add other languages as needed
 }
-
 def get_language_from_extension(file_ext):
     FILE_EXTENSION_LANGUAGE_MAP = {
         ".java": LanguageEnum.JAVA,
         ".py": LanguageEnum.PYTHON,
         ".js": LanguageEnum.JAVASCRIPT,
         ".rs": LanguageEnum.RUST,
+        ".jsx": LanguageEnum.JAVASCRIPT, # I think this is correct
+        ".ts": LanguageEnum.TYPESCRIPT,
+        ".tsx": LanguageEnum.TSX,
+        ".html": LanguageEnum.HTML,
+        ".css": LanguageEnum.CSS,
         # Add other extensions and languages as needed
     }
     return FILE_EXTENSION_LANGUAGE_MAP.get(file_ext)
@@ -112,6 +134,7 @@ def parse_code_files(file_list):
         files_by_language[language].append(file_path)
 
     for language, files in files_by_language.items():
+        print(f"\n\n\nParsing {len(files)} files for language {language}\n\n\n")
         treesitter_parser = Treesitter.create_treesitter(language)
         for file_path in files:
             with open(file_path, "r", encoding="utf-8") as file:
@@ -236,6 +259,7 @@ if __name__ == "__main__":
     codebase_path = sys.argv[1]
 
     files = load_files(codebase_path)
+    print(f"\n\n\nFound {len(files)} files to parse. {files}\n\n\n")
     class_data, method_data, class_names, method_names = parse_code_files(files)
 
     # Find references

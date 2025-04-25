@@ -11,6 +11,10 @@ class LanguageEnum(Enum):
     PYTHON = "python"
     RUST = "rust"
     JAVASCRIPT = "javascript"
+    TYPESCRIPT = "typescript"
+    TSX = "tsx"
+    HTML = "html"
+    CSS = "css"
     UNKNOWN = "unknown"
 
 LANGUAGE_QUERIES = {
@@ -67,12 +71,51 @@ LANGUAGE_QUERIES = {
                 name: (identifier) @class.name)
         """,
         'method_query': """
-            (method_definition
-                name: (property_identifier) @method.name)
+            (function_declaration
+                name: (identifier) @function.name)
         """,
         'doc_query': """
             ((comment) @comment)
         """
+    },
+    LanguageEnum.TYPESCRIPT: {
+        'class_query': """
+            (class_declaration
+                name: (identifier) @class.name)
+        """,
+        'method_query': """
+            (method_definition
+                name: (property_identifier) @method.name)
+        """,
+        'function_query': """
+            (function_declaration
+                name: (identifier) @function.name)
+        """,
+        'doc_query': """
+            (comment) @comment
+        """
+    },
+    LanguageEnum.TSX: {
+        'class_query': """
+            (class_declaration (identifier) @class_name)
+        """,
+        'method_query': """
+            (function_declaration name: (identifier) @method_name)
+            (method_definition   name: (property_identifier) @method_name)
+        """,
+        'doc_query': """
+            (comment) @comment
+        """
+    },
+    LanguageEnum.HTML: {
+        'class_query': "",
+        'method_query': "",
+        'doc_query': ""
+    },
+    LanguageEnum.CSS: {
+        'class_query': "",
+        'method_query': "",
+        'doc_query': ""
     },
     # Add other languages as needed
 }
